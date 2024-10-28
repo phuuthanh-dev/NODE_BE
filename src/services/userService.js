@@ -1,5 +1,5 @@
-const User = require("../models/user");
-const Role = require("../models/role");
+const User = require("../models/User");
+const Role = require("../models/Role");
 const ZodiacElement = require("../models/Zodiac");
 var bcrypt = require("bcryptjs");
 const salt = bcrypt.genSaltSync(10);
@@ -85,7 +85,7 @@ let handleUserRegister = (email, password, gender, name, birth, zodiac) => {
                 return;
             }
             const role = await Role.findOne({ name: "user" });
-            
+
             const user = new User({
                 email: email,
                 password: hashedPassword,

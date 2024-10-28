@@ -6,7 +6,7 @@ const userPackageSchema = new Schema({
     duration: Number,
     startDay: Date,
     usesRemaining: Number
-});
+}, { timestamps: true });
 
 const UserPackage = mongoose.model('UserPackage', userPackageSchema);
 

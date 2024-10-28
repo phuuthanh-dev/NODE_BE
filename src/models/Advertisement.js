@@ -6,7 +6,7 @@ const advertisementSchema = new Schema({
     createdAt: { type: Date, default: Date.now },
     content: String,
     status: String
-});
+}, { timestamps: true });
 
 const Advertisement = mongoose.model('Advertisement', advertisementSchema);
 

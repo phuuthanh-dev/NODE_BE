@@ -2,6 +2,7 @@ const express = require('express');
 const userController = require('../controllers/userController');
 
 const { verifyToken, verifyAdmin, verifyStaff } = require('../middleware/auth');
+const adminController = require('../controllers/adminController');
 
 let router = express.Router();
 
@@ -11,11 +12,16 @@ let initWebRoutes = (app) => {
 
   router.post("/register", userController.handleRegister);
 
-  router.post("/forgot-password", userController.handleForgotPassword);
+  router.get("/users", adminController.getAllUser);
 
-  //    router.post("/verify-token", userController.handleVerifyEmail);
+  router.get("/user/:id", adminController.getUserById);
 
-  router.put("/reset-password", userController.handleResetPassword);
+  router.post("/users", adminController.createUser);
+
+  router.patch("/user/:id", adminController.updateUser);
+
+  router.patch("/user/:id/status", adminController.changeUserStatus);
+
 
   router.get("/icon", (req, res) => {
     res.send('😀😃😄😁😆😅🤣😂');

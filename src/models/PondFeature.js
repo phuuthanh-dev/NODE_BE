@@ -5,7 +5,7 @@ const pondFeaturesSchema = new Schema({
     targetType: String,
     value: String,
     zodiac_element: { type: mongoose.Schema.Types.ObjectId, ref: 'ZodiacElement' }
-});
+}, { timestamps: true });
 
 const PondFeature = mongoose.model('PondFeature', pondFeaturesSchema);
 

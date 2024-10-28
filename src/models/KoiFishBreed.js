@@ -5,7 +5,7 @@ const koiFishBreedSchema = new Schema({
     description: String,
     image_url: String,
     zodiac_element: { type: mongoose.Schema.Types.ObjectId, ref: 'ZodiacElement' }
-});
+}, { timestamps: true });
 
 const KoiFishBreed = mongoose.model('KoiFishBreed', koiFishBreedSchema);
 

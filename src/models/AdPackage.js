@@ -6,7 +6,7 @@ const adPackageSchema = new Schema({
     duration: Number,
     description: String,
     usesPerDur: Number
-});
+}, { timestamps: true });
 
 const AdPackage = mongoose.model('AdPackage', adPackageSchema);
 

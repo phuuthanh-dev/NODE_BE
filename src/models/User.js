@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema({
     activationCode: { type: String },
     status: { type: String, enum: ['Active', 'Inactive'], default: 'Inactive' },
     role_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Role' }
-});
+}, { timestamps: true });
 
 const User = mongoose.model('User', userSchema);
 
