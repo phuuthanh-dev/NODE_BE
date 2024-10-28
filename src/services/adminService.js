@@ -1,5 +1,6 @@
 const { genSalt } = require("bcryptjs");
 const User = require("../models/User");
+const AdPackage = require("../models/AdPackage");
 
 let handleGetAllUser = () => {
     return new Promise(async (resolve, reject) => {
@@ -38,7 +39,6 @@ const handleUserUpdate = (id, email, password, gender, name, birth, zodiac) => {
     return new Promise(async (resolve, reject) => {
         try {
             let user = await User.updateOne({ _id: id }, { email, password, gender, name, birth, zodiac });
-            await user.save();
         } catch (error) {
             console.error("Error in handleUserRegister:", error);
             resolve({ errCode: 1, message: "Server error", error: error.message });
@@ -64,9 +64,90 @@ const handleChangeUserStatus = (id) => {
     );
 }
 
+const handleGetAllServices = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let services = await AdPackage.find({});
+            if (!services) {
+                resolve({ errCode: 1, message: "Cannot get services" });
+            }
+            resolve(services);
+        } catch (error) {
+            console.error("Error in handleUserRegister:", error);
+            resolve({ errCode: 1, message: "Server error", error: error.message });
+        }
+    }
+    );
+}
+
+const handleGetServiceById = (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let service = await AdPackage.findById(id);
+            if (!service) {
+                resolve({ errCode: 1, message: "Cannot get service" });
+            }
+            resolve(service);
+        } catch (error) {
+            console.error("Error in handleUserRegister:", error);
+            resolve({ errCode: 1, message: "Server error", error: error.message });
+        }
+    }
+    );
+}
+
+const handleCreateService = (name, price, duration, description, usesPerDur) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let service = new AdPackage({ name, price, duration, description, usesPerDur });
+            await service.save();
+            resolve({ errCode: 0, message: "Create service success" });
+        } catch (error) {
+            console.error("Error in handleUserRegister:", error);
+            resolve({ errCode: 1, message: "Server error", error: error.message });
+        }
+    }
+    );
+}
+
+const handleUpdateService = (id, name, price, duration, description, usesPerDur) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let service = await AdPackage.updateOne({ _id: id }, { name, price, duration, description, usesPerDur });
+            resolve({ errCode: 0, message: "Update service success" });
+        } catch (error) {
+            console.error("Error in handleUserRegister:", error);
+            resolve({ errCode: 1, message: "Server error", error: error.message });
+        }
+    }
+    );
+}
+
+const handleDeleteService = (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let service = await AdPackage.findById(id);
+            if (!service) {
+                resolve({ errCode: 1, message: "Cannot get service" });
+            }
+            await service.remove();
+            resolve({ errCode: 0, message: "Delete service success" });
+        } catch (error) {
+            console.error("Error in handleUserRegister:", error);
+            resolve({ errCode: 1, message: "Server error", error: error.message });
+        }
+    }
+    );
+}
+
 module.exports = {
-    handleGetAllUser: handleGetAllUser,
-    handleGetUserById: handleGetUserById,
-    handleUserUpdate: handleUserUpdate,
-    handleChangeUserStatus: handleChangeUserStatus
+    handleGetAllUser,
+    handleGetUserById,
+    handleUserUpdate,
+    handleChangeUserStatus,
+    handleGetAllServices,
+    handleGetServiceById,
+    handleCreateService,
+    handleUpdateService,
+    handleDeleteService
 };

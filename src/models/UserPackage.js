@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const userPackageSchema = new Schema({
+const userPackageSchema = new mongoose.Schema({
     user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     adPackage_id: { type: mongoose.Schema.Types.ObjectId, ref: 'AdPackage' },
     duration: Number,

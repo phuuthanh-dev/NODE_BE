@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const adPackageSchema = new Schema({
+const adPackageSchema = new mongoose.Schema({
     name: { type: String, required: true },
     price: Number,
     duration: Number,
