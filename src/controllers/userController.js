@@ -442,6 +442,31 @@ const handleGetUserBill = async (req, res) => {
     return res.status(500).json({ errCode: 1, message: 'Server error', error: error.message });
   }
 }
+
+const calculateZodiac = async (req, res) => {
+  try {
+    const { birthDate } = req.body;
+
+    if (!birthDate) {
+      return res.status(400).json({
+        errCode: 1,
+        message: 'Invalid input parameters'
+      });
+    }
+
+    const zodiac = await userService.calculateZodiac(birthDate);
+
+    return res.status(200).json({
+      errCode: 0,
+      message: 'Zodiac calculated successfully',
+      zodiac
+    });
+  } catch (error) {
+    console.error('Error in calculateZodiac controller:', error);
+    return res.status(500).json({ errCode: 1, message: 'Server error', error: error.message });
+  }
+}
+
 module.exports = {
   handleLogin: handleLogin,
   handleRegister: handleRegister,
@@ -472,4 +497,5 @@ module.exports = {
   handleActiveAccount: handleActiveAccount,
   handleGetUserService: handleGetUserService,
   handleGetUserBill: handleGetUserBill,
+  calculateZodiac: calculateZodiac
 };
