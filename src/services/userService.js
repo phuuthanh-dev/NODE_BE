@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const Role = require("../models/role");
 const ZodiacElement = require("../models/Zodiac");
 var bcrypt = require("bcryptjs");
 const salt = bcrypt.genSaltSync(10);
@@ -83,14 +84,17 @@ let handleUserRegister = (email, password, gender, name, birth, zodiac) => {
                 resolve({ errCode: 2, message: "Zodiac not found" });
                 return;
             }
+            const role = await Role.findOne({ name: "user" });
+            
             const user = new User({
                 email: email,
                 password: hashedPassword,
                 gender: gender,
                 name: name,
                 birth: moment(birth, "DD/MM/YYYY").toDate(),
-                zodiac: zodiacElement._id,
+                zodiac_element: zodiacElement._id,
                 activationCode: activationCode,
+                role_id: role._id,
             });
             await user.save();
             resolve({ errCode: 0, message: "Register success" });

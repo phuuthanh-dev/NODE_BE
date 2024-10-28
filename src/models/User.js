@@ -6,9 +6,10 @@ const userSchema = new mongoose.Schema({
     name: { type: String, required: true },
     gender: { type: String, enum: ['Male', 'Female'], required: true },
     birth: { type: Date, required: true },
-    zodiac: { type: mongoose.Schema.Types.ObjectId, ref: 'ZodiacElement' },
+    zodiac_element: { type: mongoose.Schema.Types.ObjectId, ref: 'ZodiacElement' },
     activationCode: { type: String },
     status: { type: String, enum: ['Active', 'Inactive'], default: 'Inactive' },
+    role_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Role' }
 });
 
 const User = mongoose.model('User', userSchema);
