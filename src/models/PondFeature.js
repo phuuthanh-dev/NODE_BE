@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const pondFeaturesSchema = new Schema({
+const pondFeaturesSchema = new mongoose.Schema({
     user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     targetType: String,
     value: String,

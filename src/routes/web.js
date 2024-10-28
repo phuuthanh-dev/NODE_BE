@@ -23,6 +23,16 @@ let initWebRoutes = (app) => {
 
   router.patch("/user/:id/status", adminController.changeUserStatus);
 
+  router.get("/services", adminController.getAllServices);
+
+  router.get("/service/:id", adminController.getServiceById);
+
+  router.post("/services", adminController.createService);
+
+  router.patch("/service/:id", adminController.updateService);
+
+  router.delete("/service/:id", adminController.deleteService);
+
 
   router.get("/icon", (req, res) => {
     res.send('😀😃😄😁😆😅🤣😂');
