@@ -1,6 +1,8 @@
 const { genSalt } = require("bcryptjs");
 const User = require("../models/User");
 const AdPackage = require("../models/AdPackage");
+const ZodiacElement = require("../models/Zodiac");
+const { calculateZodiac } = require("../helpers/calculateZodiac");
 
 let handleGetAllUser = () => {
     return new Promise(async (resolve, reject) => {
@@ -35,10 +37,19 @@ const handleGetUserById = (id) => {
     );
 }
 
-const handleUserUpdate = (id, email, password, gender, name, birth, zodiac) => {
+const handleUserUpdate = (id, email, password, gender, name, birth) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let user = await User.updateOne({ _id: id }, { email, password, gender, name, birth, zodiac });
+            const myZodiac = await calculateZodiac(birth);
+            const zodiacElement = await ZodiacElement.findOne({ name: myZodiac.zodiacElementName });
+
+            if (!zodiacElement) {
+                resolve({ errCode: 2, message: "Zodiac not found" });
+                return;
+            }
+
+            await User.updateOne({ _id: id }, { email, password, gender, name, birth, zodiac_element: zodiacElement._id });
+            resolve({ errCode: 0, message: "Update user success" });
         } catch (error) {
             console.error("Error in handleUserRegister:", error);
             resolve({ errCode: 1, message: "Server error", error: error.message });
