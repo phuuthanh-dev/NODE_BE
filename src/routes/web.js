@@ -33,11 +33,6 @@ let initWebRoutes = (app) => {
 
   router.delete("/service/:id", adminController.deleteService);
 
-
-  router.get("/icon", (req, res) => {
-    res.send('😀😃😄😁😆😅🤣😂');
-  });
-
   router.get("/calculate-zodiac", userController.calculateZodiac);
 
   router.get("/koi-fish-breeds", koiFishBreedController.getAllKoiFishBreeds);

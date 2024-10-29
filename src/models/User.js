@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema({
     zodiac_element: { type: mongoose.Schema.Types.ObjectId, ref: 'ZodiacElement' },
     activationCode: { type: String },
     status: { type: String, enum: ['Active', 'Inactive'], default: 'Inactive' },
-    role_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Role' }
+    role: { type: String, enum: ['Admin', 'User'], default: 'User', required: true },
 }, { timestamps: true });
 
 const User = mongoose.model('User', userSchema);

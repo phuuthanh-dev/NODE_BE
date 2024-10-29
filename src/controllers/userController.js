@@ -49,10 +49,10 @@ const handleLogin = async (req, res) => {
 
 
 let handleRegister = async (req, res) => {
-  let { email, password, gender, name, birth, zodiac } = req.body;
+  let { email, password, gender, name, birth } = req.body;
 
   // Check if any required field is missing
-  if (!email || !password || !gender || !name || !birth || !zodiac) {
+  if (!email || !password || !gender || !name || !birth) {
     return res.status(400).json({
       errCode: 1,
       message: "Missing INPUT PARAMETER! Please check again!",
@@ -65,8 +65,7 @@ let handleRegister = async (req, res) => {
       password,
       gender,
       name,
-      birth,
-      zodiac
+      birth
     );
 
     if (message.errCode !== 0) {
@@ -454,7 +453,7 @@ const calculateZodiac = async (req, res) => {
       });
     }
 
-    const zodiac = await userService.calculateZodiac(birthDate);
+    const zodiac = await userService.getMyZodiac(birthDate);
 
     return res.status(200).json({
       errCode: 0,

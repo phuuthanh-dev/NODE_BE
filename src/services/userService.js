@@ -1,5 +1,4 @@
 const User = require("../models/User");
-const Role = require("../models/Role");
 const ZodiacElement = require("../models/Zodiac");
 var bcrypt = require("bcryptjs");
 const salt = bcrypt.genSaltSync(10);
@@ -8,6 +7,7 @@ const request = require("request");
 const moment = require("moment");
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
+const { calculateZodiac } = require("../helpers/calculateZodiac");
 
 
 const handleUserLogin = async (email, password) => {
@@ -61,7 +61,7 @@ let checkUserCredential = (email) => {
     });
 };
 
-let handleUserRegister = (email, password, gender, name, birth, zodiac) => {
+let handleUserRegister = (email, password, gender, name, birth) => {
     return new Promise(async (resolve, reject) => {
         try {
             let isExist = await checkUserCredential(email);
@@ -77,15 +77,13 @@ let handleUserRegister = (email, password, gender, name, birth, zodiac) => {
 
 
             const activationCode = Math.floor(100000 + Math.random() * 900000).toString();
-            // const calculateZodiacResult = await calculateZodiac(birth);
-            // const zodiacElement = new ZodiacElement({ name: calculateZodiacResult.zodiacElementName });
-            // await zodiacElement.save();
-
-            // if (!zodiacElement) {
-            //     resolve({ errCode: 2, message: "Zodiac not found" });
-            //     return;
-            // }
-            const role = await Role.findOne({ name: "user" });
+            const myZodiac = await calculateZodiac(birth);
+            const zodiacElement = await ZodiacElement.findOne({ name: myZodiac.zodiacElementName });
+            
+            if (!zodiacElement) {
+                resolve({ errCode: 2, message: "Zodiac not found" });
+                return;
+            }
 
             const user = new User({
                 email: email,
@@ -93,9 +91,8 @@ let handleUserRegister = (email, password, gender, name, birth, zodiac) => {
                 gender: gender,
                 name: name,
                 birth: moment(birth, "DD/MM/YYYY").toDate(),
-                zodiac_element: null,
-                activationCode: activationCode,
-                role_id: role._id,
+                zodiac_element: zodiacElement._id,
+                activationCode: activationCode
             });
             await user.save();
             resolve({ errCode: 0, message: "Register success" });
@@ -107,79 +104,14 @@ let handleUserRegister = (email, password, gender, name, birth, zodiac) => {
     });
 };
 
-const calculateZodiac = async (birth) => {
+const getMyZodiac = async (birth) => {
     try {
-        const year = moment(birth, "DD/MM/YYYY").year();
-        const chi = year % 12;
-        const can = year % 10;
-        const canlist = [{ name: "Canh", value: 0 },
-        { name: "Tân", value: 1 },
-        { name: "Nhâm", value: 2 },
-        { name: "Quý", value: 3 },
-        { name: "Giáp", value: 4 },
-        { name: "Ất", value: 5 },
-        { name: "Bính", value: 6 },
-        { name: "Đinh", value: 7 },
-        { name: "Mậu", value: 8 },
-        { name: "Kỷ", value: 9 }];
-        const chiList = [{ name: "Tý", value: 4 },
-        { name: "Sửu", value: 5 },
-        { name: "Dần", value: 6 },
-        { name: "Mão", value: 7 },
-        { name: "Thìn", value: 8 },
-        { name: "Tỵ", value: 9 },
-        { name: "Ngọ", value: 10 },
-        { name: "Mùi", value: 11 },
-        { name: "Thân", value: 0 },
-        { name: "Dậu", value: 1 },
-        { name: "Tuất", value: 2 },
-        { name: "Hợi", value: 3 }];
-        const upCan = [{
-            name: ["Giáp", "Ất"], value: 1
-        }, {
-            name: ["Bính", "Đinh"], value: 2
-        }, {
-            name: ["Mậu", "Kỷ"], value: 3
-        }, {
-            name: ["Canh", "Tân"], value: 4
-        }, {
-            name: ["Nhâm", "Quý"], value: 5
-        }
-        ]
-        const DiaChi = [{ name: ["Tý", "Sửu", "Ngọ", "Mùi"], value: 0 },
-        { name: ["Dần", "Mão", "Thân", "Dậu"], value: 1 },
-        { name: ["Thìn", "Tỵ", "Tuất", "Hợi"], value: 2 }
-        ]
-        const Element = [{ name: "Kim", value: 1 },
-        { name: "Mộc", value: 5 },
-        { name: "Thủy", value: 2 },
-        { name: "Hỏa", value: 3 },
-        { name: "Thổ", value: 4 }];
-        const myCan = canlist.find((item) => item.value === can);
-        const myChi = chiList.find((item) => item.value === chi);
-        const myCanChi = myCan.name + " " + myChi.name;
-        let zodiacElement = 0;
-        upCan.forEach((item) => {
-            if (item.name.includes(myCan.name)) {
-                zodiacElement = item.value;
-                return;
-            }
-        })
-        DiaChi.forEach((item) => {
-            if (item.name.includes(myChi.name)) {
-                zodiacElement += item.value;
-                return;
-            }
-        })
-        if (zodiacElement > 5) {
-            zodiacElement = zodiacElement - 5;
-        }
-        const zodiacElementName = Element.find((item) => item.value === zodiacElement).name;
+        const myZodiac = await calculateZodiac(birth);
 
-        if (!zodiacElement) {
+        if (!myZodiac) {
             return { errCode: 1, message: "Zodiac not found" };
         }
-        return { errCode: 0, message: "Success", zodiacElement: zodiacElementName, canChi: myCanChi };
+        return { errCode: 0, message: "Success", zodiacElement: myZodiac.zodiacElementName, canChi: myZodiac.myCanChi };
     } catch (error) {
         console.error("Error in calculateZodiac:", error);
         return { errCode: 1, message: "Server error" };
@@ -191,5 +123,5 @@ module.exports = {
     handleUserLogin: handleUserLogin,
     checkUserCredential: checkUserCredential,
     handleUserRegister: handleUserRegister,
-    calculateZodiac: calculateZodiac
+    getMyZodiac: getMyZodiac
 };
