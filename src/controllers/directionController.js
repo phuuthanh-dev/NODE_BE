@@ -17,7 +17,17 @@ const createDirection = async (req, res) => {
         return res.status(500).json(error);
     }
 }
+const getDirectionBydestiny = async (req, res) => {
+    try {
+        let { destiny } = req.params
+        let data = await DirectionService.getDirectionBydestiny(destiny)
+        return res.status(200).json(data);
+    } catch (error) {
+        return res.status(500).json(error);
+    }
+}
 module.exports = {
     createDirection,
-    getAllDirections
+    getAllDirections,
+    getDirectionBydestiny
 }

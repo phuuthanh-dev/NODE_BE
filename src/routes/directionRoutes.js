@@ -5,5 +5,6 @@ let router = express.Router();
 
 router.get("/directions", directionController.getAllDirections);
 router.post("/direction", directionController.createDirection);
+router.get("/directionByDestiny/:destiny", directionController.getDirectionBydestiny);
 
 module.exports = router;

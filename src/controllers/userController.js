@@ -191,6 +191,7 @@ const calculateZodiac = async (req, res) => {
   }
 }
 
+
 module.exports = {
   handleLogin: handleLogin,
   handleRegister: handleRegister,
