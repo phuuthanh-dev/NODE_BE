@@ -2,9 +2,11 @@ const swaggerAutogen = require('swagger-autogen')();
 
 const doc = {
     info: {
-        title: ' API',
+        title: 'API',
         description: 'API documentation',
     },
+    host: 'localhost:8080',
+    schemes: ['http'],
     components: {
         securitySchemes: {
             bearerAuth: {
@@ -14,9 +16,9 @@ const doc = {
             },
         },
     },
-    security: [{
-        bearerAuth: [],
-    }],
+    security: [{ bearerAuth: [] }],
+    tags: [],
+    paths: {}
 };
 
 const outputFile = './src/swagger-output.json';

@@ -1,26 +1,23 @@
 const express = require('express');
-const userController = require('../controllers/userController');
 
-const { verifyToken, verifyAdmin, verifyStaff } = require('../middleware/auth');
-
-let router = express.Router();
+const authRoutes = require('./authRoutes');
+const userRoutes = require('./userRoutes');
+const serviceRoutes = require('./serviceRoutes');
+const koiFishBreedRoutes = require('./koiFishBreedRoutes');
+const zodiacRoutes = require('./zodiacRoutes');
+const pondFuatureRouter = require('./pondFuatureRoutes')
+const destinyRouter = require("./destinyRoutes")
+const directionController = require("./directionRoute")
 
 let initWebRoutes = (app) => {
-
-  router.post("/login", userController.handleLogin);
-
-  router.post("/register", userController.handleRegister);
-
-  router.post("/forgot-password", userController.handleForgotPassword);
-
-  //    router.post("/verify-token", userController.handleVerifyEmail);
-
-  router.put("/reset-password", userController.handleResetPassword);
-
-  router.get("/icon", (req, res) => {
-    res.send('😀😃😄😁😆😅🤣😂');
-  });
-  return app.use("/api", router);
+  app.use("/api/v1", authRoutes);
+  app.use("/api/v1", userRoutes);
+  app.use("/api/v1", serviceRoutes);
+  app.use("/api/v1", koiFishBreedRoutes);
+  app.use("/api/v1", zodiacRoutes);
+  app.use("/api/v1", pondFuatureRouter)
+  app.use("/api/v1", destinyRouter)
+  app.use("/api/v1", directionController)
 };
 
 module.exports = initWebRoutes;

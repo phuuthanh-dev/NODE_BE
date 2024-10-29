@@ -1,4 +1,4 @@
-const User = require("../models/user");
+const User = require("../models/User");
 const ZodiacElement = require("../models/Zodiac");
 var bcrypt = require("bcryptjs");
 const salt = bcrypt.genSaltSync(10);
@@ -7,11 +7,12 @@ const request = require("request");
 const moment = require("moment");
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
+const { calculateZodiac } = require("../helpers/calculateZodiac");
 
 
 const handleUserLogin = async (email, password) => {
     try {
-        const existingAccount = await User.findOne({ email }).populate("zodiac");
+        const existingAccount = await User.findOne({ email }).populate("zodiac_element");
 
         if (!existingAccount) {
             return { errCode: 2, errMessage: "User not found" };
@@ -60,7 +61,7 @@ let checkUserCredential = (email) => {
     });
 };
 
-let handleUserRegister = (email, password, gender, name, birth, zodiac) => {
+let handleUserRegister = (email, password, gender, name, birth) => {
     return new Promise(async (resolve, reject) => {
         try {
             let isExist = await checkUserCredential(email);
@@ -76,21 +77,22 @@ let handleUserRegister = (email, password, gender, name, birth, zodiac) => {
 
 
             const activationCode = Math.floor(100000 + Math.random() * 900000).toString();
-            const zodiacElement = new ZodiacElement({ name: zodiac });
-            await zodiacElement.save();
+            const myZodiac = await calculateZodiac(birth);
+            const zodiacElement = await ZodiacElement.findOne({ name: myZodiac.zodiacElementName });
 
             if (!zodiacElement) {
                 resolve({ errCode: 2, message: "Zodiac not found" });
                 return;
             }
+
             const user = new User({
                 email: email,
                 password: hashedPassword,
                 gender: gender,
                 name: name,
                 birth: moment(birth, "DD/MM/YYYY").toDate(),
-                zodiac: zodiacElement._id,
-                activationCode: activationCode,
+                zodiac_element: zodiacElement._id,
+                activationCode: activationCode
             });
             await user.save();
             resolve({ errCode: 0, message: "Register success" });
@@ -102,11 +104,24 @@ let handleUserRegister = (email, password, gender, name, birth, zodiac) => {
     });
 };
 
+const getMyZodiac = async (birth) => {
+    try {
+        const myZodiac = await calculateZodiac(birth);
 
+        if (!myZodiac) {
+            return { errCode: 1, message: "Zodiac not found" };
+        }
+        return { errCode: 0, message: "Success", zodiacElement: myZodiac.zodiacElementName, canChi: myZodiac.myCanChi };
+    } catch (error) {
+        console.error("Error in calculateZodiac:", error);
+        return { errCode: 1, message: "Server error" };
+    }
+}
 
 
 module.exports = {
     handleUserLogin: handleUserLogin,
     checkUserCredential: checkUserCredential,
     handleUserRegister: handleUserRegister,
+    getMyZodiac: getMyZodiac
 };
