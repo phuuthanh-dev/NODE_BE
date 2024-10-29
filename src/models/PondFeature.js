@@ -1,8 +1,11 @@
 const mongoose = require('mongoose');
 
 const pondFeaturesSchema = new mongoose.Schema({
-    user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    targetType: String,
+    targetType: {
+        type: String,
+        enum: ['PondShape', 'Locations', 'Direction'],
+        required: true,
+    },
     value: String,
     zodiac_element: { type: mongoose.Schema.Types.ObjectId, ref: 'ZodiacElement' }
 }, { timestamps: true });
