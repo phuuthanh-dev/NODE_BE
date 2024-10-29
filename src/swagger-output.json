@@ -145,25 +145,9 @@
         }
       }
     },
-
-    "/api/users": {
+    "/api/v1/user/{id}": {
       "get": {
         "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      },
-      "post": {
-
-        "description": "",
         "parameters": [
           {
             "name": "id",
@@ -234,65 +218,8 @@
         }
       }
     },
-
-
     "/api/v1/user/{id}/status": {
-
       "patch": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "email": {
-                  "example": "any"
-                },
-                "password": {
-                  "example": "any"
-                },
-                "gender": {
-                  "example": "any"
-                },
-                "name": {
-                  "example": "any"
-                },
-                "birth": {
-                  "example": "any"
-                },
-                "zodiac": {
-
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-
-    "/api/user/{id}/status": {
-      "patch": {
-
         "description": "",
         "parameters": [
           {
@@ -325,10 +252,9 @@
             "description": "Internal Server Error"
           }
         }
-
       }
     },
-    "/api/services": {
+    "/api/v1/services": {
       "get": {
         "description": "",
         "responses": {
@@ -380,100 +306,6 @@
           },
           "500": {
             "description": "Internal Server Error"
-
-          }
-        }
-      }
-    },
-    "/api/service/{id}": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      },
-      "patch": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "example": "any"
-                },
-                "price": {
-                  "example": "any"
-                },
-                "duration": {
-                  "example": "any"
-                },
-                "description": {
-                  "example": "any"
-                },
-                "usesPerDur": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      },
-      "delete": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
-
           }
         }
       }
@@ -830,12 +662,69 @@
         }
       }
     },
-    "/api/v1/destiny": {
-      "post": {
+    "/api/v1/directions": {
+      "get": {
         "description": "",
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/direction": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "example": "any"
+                },
+                "content": {
+                  "example": "any"
+                },
+                "destiny": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/directionByDestiny/{destiny}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "destiny",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
