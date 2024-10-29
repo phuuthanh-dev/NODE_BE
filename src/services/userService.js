@@ -12,7 +12,7 @@ const { calculateZodiac } = require("../helpers/calculateZodiac");
 
 const handleUserLogin = async (email, password) => {
     try {
-        const existingAccount = await User.findOne({ email }).populate("zodiac");
+        const existingAccount = await User.findOne({ email }).populate("zodiac_element");
 
         if (!existingAccount) {
             return { errCode: 2, errMessage: "User not found" };
@@ -79,7 +79,6 @@ let handleUserRegister = (email, password, gender, name, birth) => {
             const activationCode = Math.floor(100000 + Math.random() * 900000).toString();
             const myZodiac = await calculateZodiac(birth);
             const zodiacElement = await ZodiacElement.findOne({ name: myZodiac.zodiacElementName });
-            
             if (!zodiacElement) {
                 resolve({ errCode: 2, message: "Zodiac not found" });
                 return;

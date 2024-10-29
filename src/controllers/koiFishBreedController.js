@@ -31,7 +31,8 @@ const getKoiFishById = async (req, res) => {
 
 const getKoiFishByZodiac = async (req, res) => {
     try {
-        let { zodiacId } = req.body;
+        const { zodiacId } = req.body;
+
         let data = await koiFishBreedService.getKoiFishByZodiac(zodiacId);
         return res.status(200).json(data);
     } catch (error) {

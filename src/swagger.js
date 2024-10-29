@@ -16,9 +16,8 @@ const doc = {
             },
         },
     },
-    security: [{
-        bearerAuth: [],
-    }],
+
+    security: [{ bearerAuth: [] }],
     tags: [],
     paths: {}
 };

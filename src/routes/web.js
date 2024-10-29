@@ -1,51 +1,24 @@
 const express = require('express');
-const userController = require('../controllers/userController');
-const koiFishBreedController = require('../controllers/koiFishBreedController');
 
-const { verifyToken, verifyAdmin, verifyStaff } = require('../middleware/auth');
-const adminController = require('../controllers/adminController');
-
-let router = express.Router();
+const authRoutes = require('./authRoutes');
+const userRoutes = require('./userRoutes');
+const serviceRoutes = require('./serviceRoutes');
+const koiFishBreedRoutes = require('./koiFishBreedRoutes');
+const zodiacRoutes = require('./zodiacRoutes');
+const pondFuatureRouter = require('./pondFuatureRoutes')
+const destinyRouter = require("./destinyRoutes")
+const directionController = require("./directionRoute")
 
 let initWebRoutes = (app) => {
+  app.use("/api/v1", authRoutes);
+  app.use("/api/v1", userRoutes);
+  app.use("/api/v1", serviceRoutes);
+  app.use("/api/v1", koiFishBreedRoutes);
+  app.use("/api/v1", zodiacRoutes);
+  app.use("/api/v1", pondFuatureRouter)
+  app.use("/api/v1", destinyRouter)
+  app.use("/api/v1", directionController)
 
-  router.post("/login", userController.handleLogin);
-
-  router.post("/register", userController.handleRegister);
-
-  router.get("/users", adminController.getAllUser);
-
-  router.get("/user/:id", adminController.getUserById);
-
-  router.post("/users", adminController.createUser);
-
-  router.patch("/user/:id", adminController.updateUser);
-
-  router.patch("/user/:id/status", adminController.changeUserStatus);
-
-  router.get("/services", adminController.getAllServices);
-
-  router.get("/service/:id", adminController.getServiceById);
-
-  router.post("/services", adminController.createService);
-
-  router.patch("/service/:id", adminController.updateService);
-
-  router.delete("/service/:id", adminController.deleteService);
-
-  router.get("/calculate-zodiac", userController.calculateZodiac);
-
-  router.get("/koi-fish-breeds", koiFishBreedController.getAllKoiFishBreeds);
-
-  router.post("/koi-fish-breed", koiFishBreedController.createKoiFishBreed);
-
-  router.get("/get-koi-by-zodiac", koiFishBreedController.getKoiFishByZodiac);
-
-  router.get("/get-koi-by-id/:id", koiFishBreedController.getKoiFishById);
-
-  router.patch("/koi-fish-breed/:id", koiFishBreedController.updateKoiFishBreed);
-
-  return app.use("/api", router);
 };
 
 module.exports = initWebRoutes;
