@@ -1,12 +1,8 @@
 const User = require("../models/User");
 const ZodiacElement = require("../models/Zodiac");
 var bcrypt = require("bcryptjs");
-const salt = bcrypt.genSaltSync(10);
 require("dotenv").config();
-const request = require("request");
 const moment = require("moment");
-const nodemailer = require("nodemailer");
-const crypto = require("crypto");
 const { calculateZodiac } = require("../helpers/calculateZodiac");
 
 
