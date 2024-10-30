@@ -1,5 +1,8 @@
 const Advertisement = require('../models/Advertisement');
+const KoiFishBreed = require('../models/KoiFishBreed');
+const ZodiacElement = require('../models/Zodiac');
 const AdvertisementFengShuiTarget = require('../models/AdvertisementFengShuiTarget ');
+const { model } = require('mongoose');
 
 const handleGetAllAdvertisement = () => {
     return new Promise(async (resolve, reject) => {
@@ -21,10 +24,18 @@ const handleGetAllAdvertisement = () => {
 const handleGetAdvertisementById = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let advertisement = await Advertisement.findById(id);
+            let advertisement = await Advertisement.findById(id).populate({
+                path: "tags",
+                populate: {
+                    path: "attribute_id",
+                    model: ["KoiFishBreed", "ZodiacElement", "PondFeature"]
+                }
+            });
+            
             if (!advertisement) {
                 resolve({ errCode: 1, message: "Cannot get advertisement" });
             }
+            
             resolve(advertisement);
         } catch (error) {
             console.error("Error in handleGetAdvertisementById:", error);
@@ -33,23 +44,63 @@ const handleGetAdvertisementById = (id) => {
     });
 }
 
-const handleCreateAdvertisement = (title, content, image, user) => {
-    console.log("user", user);
-
+const handleCreateAdvertisement = (title, content, image, tags, user) => {
     return new Promise(async (resolve, reject) => {
         try {
-
-            let advertisement = new Advertisement({
+            const predefinedTags = [
+                "Giống Cá Koi",
+                "Tính Năng Hồ",
+                "Yếu Tố Cung Hoàng Đạo",
+            ];
+            const advertisement = new Advertisement({
                 title: title,
                 content: content,
                 image: image,
                 status: false,
                 user_id: user.id
             });
+            console.log(tags);
+            for (const tagGroup of tags) {
+                const tag = tagGroup.tag;
+                if (predefinedTags.includes(tag)) {
+                    const childTags = tagGroup.childTags;
+                    for (const childTag of childTags) {
+                        if (tag === "Giống Cá Koi") {
+                            const koiFishBreed = await KoiFishBreed.findOne({ name: childTag });
+                            if (koiFishBreed) {
+                                const advertisementFengShuiTarget = new AdvertisementFengShuiTarget({
+                                    attribute_id: koiFishBreed._id,
+                                    TargetType: "KoiFishBreeds"
+                                });
+                                await advertisementFengShuiTarget.save();
+                                advertisement.tags.push(advertisementFengShuiTarget._id);
+                            }
+                        } else if (tag === "Yếu Tố Cung Hoàng Đạo") {
+                            const zodiacElement = await ZodiacElement.findOne({ name: childTag });
+                            if (zodiacElement) {
+                                const advertisementFengShuiTarget = new AdvertisementFengShuiTarget({
+                                    attribute_id: zodiacElement._id,
+                                    TargetType: "ZodiacElements"
+                                });
+                                await advertisementFengShuiTarget.save();
+                                advertisement.tags.push(advertisementFengShuiTarget._id);
+                            }
+                        } else if (tag === "Tính Năng Hồ") {
+                            const pondFeature = await PondFuture.findOne({ name: childTag });
+                            if (pondFeature) {
+                                const advertisementFengShuiTarget = new AdvertisementFengShuiTarget({
+                                    attribute_id: pondFeature._id,
+                                    TargetType: "PondFeatures"
+                                });
+                                await advertisementFengShuiTarget.save();
+                                advertisement.tags.push(advertisementFengShuiTarget._id);
+                            }
+                        }
+                    }
+                }
+            }
 
             await advertisement.save();
-
-            const advertisementCategory = new AdvertisementFengShuiTarget
             resolve(advertisement);
         } catch (error) {
             console.error("Error in handleCreateAdvertisement:", error);

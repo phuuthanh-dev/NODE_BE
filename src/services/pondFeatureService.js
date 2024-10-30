@@ -13,8 +13,8 @@ const createPondFeature = async (targetType, value, zoldiacId) => {
 
 const getAllPondFeatures = async () => {
     try {
-        const PondFuatures = await PondFuture.find();
-        return { errCode: 0, message: "Success", PondFuatures };
+        const pondFeatures = await PondFuture.find();
+        return { errCode: 0, message: "Success", pondFeatures };
     } catch (error) {
         console.error("Error in createPondFeature:", error);
         return { errCode: 1, message: "Server error" };
