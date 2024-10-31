@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const pondFeaturesSchema = new mongoose.Schema({
     targetType: {
         type: String,
-        enum: ['PondShape', 'Locations', 'Direction'],
+        enum: ['Hình dáng', 'Vị trí', 'Hướng'],
         required: true,
     },
     status: { type: String, enum: ['Active', 'Inactive'], default: 'Inactive' },
