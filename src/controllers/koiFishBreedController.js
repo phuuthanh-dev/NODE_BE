@@ -11,8 +11,8 @@ const getAllKoiFishBreeds = async (req, res) => {
 
 const createKoiFishBreed = async (req, res) => {
     try {
-        let { name, description, imageUrl, zodiacElementId } = req.body;
-        let data = await koiFishBreedService.createKoiFishBreed(name, description, imageUrl, zodiacElementId);
+        let { name, description, image_url, zodiac_element } = req.body;
+        let data = await koiFishBreedService.createKoiFishBreed(name, description, image_url, zodiac_element);
         return res.status(200).json(data);
     } catch (error) {
         return res.status(500).json(error);
@@ -51,10 +51,21 @@ const updateKoiFishBreed = async (req, res) => {
     }
 }
 
+const updateKoiFishBreedStatus = async (req, res) => {
+    try {
+        let { id } = req.params;
+        let data = await koiFishBreedService.updateKoiFishBreedStatus(id);
+        return res.status(200).json(data);
+    } catch (error) {
+        return res.status(500).json(error);
+    }
+}
+
 module.exports = {
     getAllKoiFishBreeds,
     createKoiFishBreed,
     getKoiFishByZodiac,
     getKoiFishById,
-    updateKoiFishBreed
+    updateKoiFishBreed,
+    updateKoiFishBreedStatus
 }

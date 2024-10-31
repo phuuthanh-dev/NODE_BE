@@ -8,5 +8,6 @@ router.post("/koi-fish-breed", koiFishBreedController.createKoiFishBreed);
 router.get("/get-koi-by-zodiac", koiFishBreedController.getKoiFishByZodiac);
 router.get("/get-koi-by-id/:id", koiFishBreedController.getKoiFishById);
 router.patch("/koi-fish-breed/:id", koiFishBreedController.updateKoiFishBreed);
+router.patch("/koi-fish-breeds/:id/status", koiFishBreedController.updateKoiFishBreedStatus);
 
 module.exports = router;
