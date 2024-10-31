@@ -85,7 +85,7 @@ let handleUserRegister = (email, password, gender, name, birth) => {
                 password: hashedPassword,
                 gender: gender,
                 name: name,
-                birth: moment(birth, "DD/MM/YYYY").toDate(),
+                birth: moment(birth, "YYYY-MM-DD").toDate(),
                 zodiac_element: zodiacElement._id,
                 activationCode: activationCode
             });

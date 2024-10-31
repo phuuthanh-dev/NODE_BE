@@ -19,15 +19,6 @@ const createDirections = async (title, content, destiny) => {
         return { errCode: 1, message: "Server error" };
     }
 }
-const getDirectionBydestiny = async (destiny) => {
-    try {
-        const directions = await Direction.find({ destiny });
-        return { errCode: 0, message: "Success", directions: directions };
-    } catch (error) {
-        console.error("Error in getDirectionBydestiny:", error);
-        return { errCode: 1, message: "Server error" };
-    }
-}
 module.exports = {
     getAllDirections,
     createDirections,
