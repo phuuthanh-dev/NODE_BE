@@ -38,9 +38,20 @@ const getPondFeatureByTargetType = async (targetType) => {
         return { errCode: 1, message: "Server error" };
     }
 }
+
+const getPondFeature = async (id) => {
+    try {
+        const pond = await PondFuture.findById(id).populate("zodiac_element");
+        return { errCode: 0, message: "Success", pond };
+    } catch (error) {
+        console.error("Error in createPondFeature:", error);
+        return { errCode: 1, message: "Server error" };
+    }
+}
 module.exports = {
     getAllPondFeatures,
     createPondFeature,
     updatePondFeature,
-    getPondFeatureByTargetType
+    getPondFeatureByTargetType,
+    getPondFeature
 }

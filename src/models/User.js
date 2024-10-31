@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema({
     activationCode: { type: String },
     status: { type: String, enum: ['Active', 'Inactive'], default: 'Inactive' },
     role: { type: String, enum: ['Admin', 'User'], default: 'User', required: true },
+    balance: { type: Number, default: 0 },
 }, { timestamps: true });
 
 const User = mongoose.model('User', userSchema);

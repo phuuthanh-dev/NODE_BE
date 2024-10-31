@@ -40,7 +40,8 @@
     "supertest": "^7.0.0",
     "swagger-autogen": "^2.23.7",
     "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^4.6.2"
+    "swagger-ui-express": "^4.6.2",
+    "vnpay": "^1.6.0"
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",
