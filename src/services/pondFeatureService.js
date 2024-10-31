@@ -42,7 +42,7 @@ const updatePondFeature = async (id, targetType, value, status, zodiac_element) 
 
 const changeStatus = async (id) => {
     try {
-        const pondFeature = await PondFuture.findById(id); 
+        const pondFeature = await PondFuture.findById(id);
         pondFeature.status = pondFeature.status === "Active" ? "Inactive" : "Active";
         await pondFeature.save();
         return { errCode: 0, message: "Success" };
