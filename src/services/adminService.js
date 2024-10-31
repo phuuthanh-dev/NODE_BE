@@ -28,7 +28,7 @@ let handleGetAllUser = () => {
 const handleGetUserById = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let user = await User.findById(id);
+            let user = await User.findById(id).populate("zodiac_element");
             if (!user) {
                 resolve({ errCode: 1, message: "Cannot get user" });
             } else {
