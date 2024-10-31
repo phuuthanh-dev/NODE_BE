@@ -77,9 +77,10 @@ let handleUserRegister = (email, password, gender, name, birth) => {
 
 
             const activationCode = Math.floor(100000 + Math.random() * 900000).toString();
-            const myZodiac = await calculateZodiac(birth);
-            const zodiacElement = await ZodiacElement.findOne({ name: myZodiac.zodiacElementName });
 
+            const myZodiac = await calculateZodiac(birth);
+            console.log(myZodiac);
+            const zodiacElement = await ZodiacElement.findOne({ name: myZodiac.zodiacElementName });
             if (!zodiacElement) {
                 resolve({ errCode: 2, message: "Zodiac not found" });
                 return;
@@ -90,7 +91,7 @@ let handleUserRegister = (email, password, gender, name, birth) => {
                 password: hashedPassword,
                 gender: gender,
                 name: name,
-                birth: moment(birth, "DD/MM/YYYY").toDate(),
+                birth: moment(birth, "YYYY-MM-DD").toDate(),
                 zodiac_element: zodiacElement._id,
                 activationCode: activationCode
             });

@@ -8,6 +8,7 @@ const advertisementFengShuiTargetSchema = new mongoose.Schema({
         enum: ['KoiFishBreeds', 'PondFeatures', 'ZodiacElements'],
         required: true,
     }
+
 }, { timestamps: true });
 
 const AdvertisementFengShuiTarget = mongoose.model('AdvertisementFengShuiTarget', advertisementFengShuiTargetSchema);

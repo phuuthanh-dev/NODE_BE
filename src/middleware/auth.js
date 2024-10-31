@@ -35,7 +35,7 @@ const verifyStaff = (req, res, next) => {
   });
 };
 module.exports = {
-  verifyToken: verifyToken,
-  verifyAdmin: verifyAdmin,
-  verifyStaff: verifyStaff
+  verifyToken,
+  verifyAdmin,
+  verifyStaff
 };

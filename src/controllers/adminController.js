@@ -30,8 +30,8 @@ const getUserById = async (req, res) => {
 
 const createUser = async (req, res) => {
     try {
-        const { email, password, gender, name, birth, zodiac } = req.body;
-        const message = await userService.handleUserRegister(email, password, gender, name, birth, zodiac);
+        const { email, password, gender, name, birth } = req.body;
+        const message = await userService.handleUserRegister(email, password, gender, name, birth);
         if (message.errCode !== 0) {
             return res.status(400).json(message);
         } else {
@@ -46,8 +46,8 @@ const createUser = async (req, res) => {
 const updateUser = async (req, res) => {
     try {
         const { id } = req.params;
-        const { email, password, gender, name, birth, zodiac } = req.body;
-        const message = await adminService.handleUserUpdate(id, email, password, gender, name, birth, zodiac);
+        const { email, password, gender, name, birth } = req.body;
+        const message = await adminService.handleUserUpdate(id, email, password, gender, name, birth);
         if (message.errCode !== 0) {
             return res.status(400).json(message);
         } else {
