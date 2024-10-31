@@ -1,7 +1,7 @@
 const moment = require("moment");
 
 const calculateZodiac = async (birth) => {
-    const year = moment(birth, "DD/MM/YYYY").year();
+    const year = moment(birth, "YYYY-MM-DD").year();
     const chi = year % 12;
     const can = year % 10;
 
@@ -54,11 +54,9 @@ const calculateZodiac = async (birth) => {
         { name: "Hỏa", value: 3 },
         { name: "Thổ", value: 4 }
     ];
-
     const myCan = canlist.find((item) => item.value === can);
     const myChi = chiList.find((item) => item.value === chi);
-    const myCanChi = myCan.name + " " + myChi.name;
-
+    const myCanChi = myCan.name + " " + myChi.name
     let zodiacElement = 0;
     upCan.forEach((item) => {
         if (item.name.includes(myCan.name)) {

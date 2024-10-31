@@ -1,12 +1,8 @@
 const User = require("../models/User");
 const ZodiacElement = require("../models/Zodiac");
 var bcrypt = require("bcryptjs");
-const salt = bcrypt.genSaltSync(10);
 require("dotenv").config();
-const request = require("request");
 const moment = require("moment");
-const nodemailer = require("nodemailer");
-const crypto = require("crypto");
 const { calculateZodiac } = require("../helpers/calculateZodiac");
 
 
@@ -89,7 +85,7 @@ let handleUserRegister = (email, password, gender, name, birth) => {
                 password: hashedPassword,
                 gender: gender,
                 name: name,
-                birth: moment(birth, "DD/MM/YYYY").toDate(),
+                birth: moment(birth, "YYYY-MM-DD").toDate(),
                 zodiac_element: zodiacElement._id,
                 activationCode: activationCode
             });

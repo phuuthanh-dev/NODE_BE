@@ -28,6 +28,7 @@ const getDirectionBydestiny = async (destiny) => {
         return { errCode: 1, message: "Server error" };
     }
 }
+
 module.exports = {
     getAllDirections,
     createDirections,

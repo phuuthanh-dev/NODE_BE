@@ -12,6 +12,7 @@ const advertisementRouter = require('./advertisementRoutes');
 const balanceRoutes = require('./balanceRoutes');
 const paymentRoutes = require('./paymentRoutes');
 const transactionRoutes = require('./transactionRoutes');
+const fengShuiRouter = require('./fengShuiRoutes');
 
 let initWebRoutes = (app) => {
   app.use("/api/v1", authRoutes);
@@ -26,6 +27,7 @@ let initWebRoutes = (app) => {
   app.use("/api/v1", balanceRoutes);
   app.use("/api/v1", paymentRoutes);
   app.use("/api/v1", transactionRoutes);
+  app.use("/api/v1", fengShuiRouter);
 };
 
 module.exports = initWebRoutes;
