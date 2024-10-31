@@ -4,6 +4,7 @@ var bcrypt = require("bcryptjs");
 require("dotenv").config();
 const moment = require("moment");
 const { calculateZodiac } = require("../helpers/calculateZodiac");
+const Consultation = require("../models/Consultation");
 
 
 const handleUserLogin = async (email, password) => {
@@ -11,16 +12,16 @@ const handleUserLogin = async (email, password) => {
         const existingAccount = await User.findOne({ email }).populate("zodiac_element");
 
         if (!existingAccount) {
-            return { errCode: 2, errMessage: "User not found" };
+            return { errCode: 2, message: "User not found" };
         }
 
         if (existingAccount.status !== "Active") {
-            return { errCode: 4, errMessage: "Account has been locked" };
+            return { errCode: 4, message: "Account has been locked" };
         }
 
         const isPasswordValid = await bcrypt.compare(password, existingAccount.password);
         if (!isPasswordValid) {
-            return { errCode: 1, errMessage: "Username or password is incorrect" };
+            return { errCode: 1, message: "Username or password is incorrect" };
         }
 
         const { password: _, status, activationCode, __v, ...userWithoutPassword } = existingAccount.toObject();
@@ -113,10 +114,26 @@ const getMyZodiac = async (birth) => {
     }
 }
 
+const createConsultation = async (userId, timeBooked, description) => {
+    try {
+        const user = await User.findById(userId);
+        user.balance = user.balance - 200000;
+        await user.save();
+        const consultation = new Consultation({ user: user._id, timeBooked, description });
+        await consultation.save();
+        return { errCode: 0, message: "Đặt lịch thành công", consultation };
+    }
+    catch (error) {
+        console.error("Error in createConsultation:", error);
+        return { errCode: 1, message: "Server error" };
+    }
+}
+
 
 module.exports = {
     handleUserLogin: handleUserLogin,
     checkUserCredential: checkUserCredential,
     handleUserRegister: handleUserRegister,
-    getMyZodiac: getMyZodiac
+    getMyZodiac: getMyZodiac,
+    createConsultation,
 };
