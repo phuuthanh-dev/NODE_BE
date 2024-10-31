@@ -1,14 +1,13 @@
 const User = require("../models/User");
 const ZodiacElement = require("../models/Zodiac");
 var bcrypt = require("bcryptjs");
-const salt = bcrypt.genSaltSync(10);
 require("dotenv").config();
-const request = require("request");
 const moment = require("moment");
-const nodemailer = require("nodemailer");
-const crypto = require("crypto");
 const { calculateZodiac } = require("../helpers/calculateZodiac");
-
+const paypal = require("paypal-rest-sdk");
+const UserPackage = require("../models/UserPackage");
+const AdPackage = require("../models/AdPackage");
+const Transaction = require('../models/transaction');
 
 const handleUserLogin = async (email, password) => {
     try {
@@ -42,9 +41,6 @@ const handleUserLogin = async (email, password) => {
     }
 };
 
-
-
-
 let checkUserCredential = (email) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -75,11 +71,8 @@ let handleUserRegister = (email, password, gender, name, birth) => {
 
             const hashedPassword = await bcrypt.hash(password, 10);
 
-
             const activationCode = Math.floor(100000 + Math.random() * 900000).toString();
-
             const myZodiac = await calculateZodiac(birth);
-            console.log(myZodiac);
             const zodiacElement = await ZodiacElement.findOne({ name: myZodiac.zodiacElementName });
             if (!zodiacElement) {
                 resolve({ errCode: 2, message: "Zodiac not found" });
@@ -119,10 +112,75 @@ const getMyZodiac = async (birth) => {
     }
 }
 
+const buyPackage = async (req) => {
+    try {
+        console.log(req.body);
+        const { packageId, userId } = req.body;
+        const user = await User.findById(userId);
+        if (!user) {
+            return { errCode: 1, message: "User not found" };
+        }
+
+        const adPackage = await AdPackage.findById(packageId);
+        if (!adPackage) {
+            return { errCode: 2, message: "Package not found" };
+        }
+
+        if (user.balance < adPackage.price) {
+            return { errCode: 3, message: "Insufficient balance" };
+        }
+
+        const activePackage = await UserPackage.findOne({ user_id: userId });
+        const startDay = new Date();
+        const endDay = moment(startDay).add(adPackage.duration, 'days').toDate();
+
+        let userPackage;
+        if (activePackage) {
+            const newExpireDate = new Date(Math.max(endDay, activePackage.expireDate));
+            userPackage = await UserPackage.findByIdAndUpdate(
+                activePackage._id, {
+                    expireDate: newExpireDate,
+                    tokenPoint: activePackage.tokenPoint + adPackage.usesPerDur
+                }, { new: true }
+            );
+        } else {
+            userPackage = new UserPackage({
+                user_id: userId,
+                expireDate: endDay,
+                tokenPoint: adPackage.usesPerDur
+            });
+            await userPackage.save();
+        }
+
+        user.balance -= adPackage.price;
+        await user.save();
+
+        const transactionCode = `PA${Date.now()}`;
+
+        const transaction = new Transaction({
+            user_id: userId,
+            type: "Buy package money",
+            code: transactionCode,
+            amount: adPackage.price,
+            content: `Buy package ${adPackage.name}`,
+            status: "Success",
+            paymentMethod: "Balance"
+        });
+        await transaction.save();
+
+        console.log(userPackage);
+
+        return { errCode: 0, message: "Success" };
+    } catch (error) {
+        console.error("Error in buyPackage:", error);
+        return { errCode: 1, message: "Server error" };
+    }
+};
 
 module.exports = {
-    handleUserLogin: handleUserLogin,
-    checkUserCredential: checkUserCredential,
-    handleUserRegister: handleUserRegister,
-    getMyZodiac: getMyZodiac
+    handleUserLogin,
+    checkUserCredential,
+    handleUserRegister,
+    getMyZodiac,
+    buyPackage
 };

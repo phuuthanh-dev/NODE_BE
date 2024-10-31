@@ -10,7 +10,7 @@ const getAllDestinies = async (req, res) => {
 }
 const createDestiny = async (req, res) => {
     try {
-        console.log(req.body);
+
         const { name } = req.body;
         let data = await destinyService.createDestinie(name)
         return res.status(200).json(data);

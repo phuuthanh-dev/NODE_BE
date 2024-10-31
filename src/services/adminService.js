@@ -7,12 +7,16 @@ const { calculateZodiac } = require("../helpers/calculateZodiac");
 let handleGetAllUser = () => {
     return new Promise(async (resolve, reject) => {
         try {
-            let users = await User.find({});
+            let users = await User.find({}).populate("zodiac_element");
 
             if (!users) {
                 resolve({ errCode: 1, message: "Cannot get user" });
             }
-            resolve(users);
+            const usersWithoutPassword = users.map(user => {
+                const { password: _, activationCode, __v, ...userWithoutPassword } = user.toObject();
+                return userWithoutPassword;
+            });
+            resolve(usersWithoutPassword);
         } catch (error) {
             console.error("Error in handleUserRegister:", error);
             resolve({ errCode: 1, message: "Server error", error: error.message });
@@ -27,15 +31,16 @@ const handleGetUserById = (id) => {
             let user = await User.findById(id);
             if (!user) {
                 resolve({ errCode: 1, message: "Cannot get user" });
+            } else {
+                const { password: _, activationCode, __v, ...userWithoutPassword } = user.toObject();
+                resolve(userWithoutPassword);
             }
-            resolve(user);
         } catch (error) {
-            console.error("Error in handleUserRegister:", error);
+            console.error("Error in handleGetUserById:", error);
             resolve({ errCode: 1, message: "Server error", error: error.message });
         }
-    }
-    );
-}
+    });
+};
 
 const handleUserUpdate = (id, email, password, gender, name, birth) => {
     return new Promise(async (resolve, reject) => {

@@ -191,13 +191,38 @@ const calculateZodiac = async (req, res) => {
   }
 }
 
+const buyPackage = async (req, res) => {
+  try {
+    const result = await userService.buyPackage(req);
+    switch (result.errCode) {
+      case 0:
+        return res.status(200).json(result);
+      case 1:
+        return res.status(401).json(result); // User not found
+      case 2:
+        return res.status(402).json(result); // Package not found
+      case 3:
+        return res.status(403).json(result); // Insufficient balance
+      default:
+        return res.status(500).json({ errCode: 1, message: 'Unknown error' });
+    }
+  } catch (error) {
+    console.error('Error in buyPackage:', error);
+    return res.status(500).json({
+      errCode: 500,
+      message: 'Server error',
+      error: error.message
+    });
+  }
+};
 
 module.exports = {
-  handleLogin: handleLogin,
-  handleRegister: handleRegister,
-  handleForgotPassword: handleForgotPassword,
-  getProfile: getProfile,
-  updateProfile: updateProfile,
-  deleteAccount: deleteAccount,
-  calculateZodiac: calculateZodiac
+  handleLogin,
+  handleRegister,
+  handleForgotPassword,
+  getProfile,
+  updateProfile,
+  deleteAccount,
+  calculateZodiac,
+  buyPackage
 };

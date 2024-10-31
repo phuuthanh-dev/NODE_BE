@@ -6,7 +6,7 @@ const advertisementSchema = new mongoose.Schema({
     content: String,
     status: String,
     image: String,
-    
+    tags: [{ type: mongoose.Schema.Types.ObjectId, ref: 'AdvertisementFengShuiTarget' }],
 }, { timestamps: true });
 
 const Advertisement = mongoose.model('Advertisement', advertisementSchema);

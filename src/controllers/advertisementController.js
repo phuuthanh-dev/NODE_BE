@@ -30,14 +30,14 @@ const getAdvertisementById = async (req, res) => {
 
 const createAdvertisement = async (req, res) => {
     try {
-        const { title, content, image } = req.body;
+        const { title, content, image, tags } = req.body;
         const user = req.user;
 
-        const advertisement = await advertisementSerive.handleCreateAdvertisement(title, content, image, user);
+        const advertisement = await advertisementSerive.handleCreateAdvertisement(title, content, image, tags,user);
         if (!advertisement) {
             return res.status(400).json({ errCode: 1, message: "Cannot create advertisement" });
         }
-        return res.status(200).json({ errCode: 0, message: "Create advertisement success", advertisement: advertisement });
+        return res.status(200).json({ errCode: 0, message: "Create advertisement success" });
     } catch (error) {
         console.error("Error in handleCreateAdvertisement:", error);
         return res.status(500).json({ errCode: 1, message: "Server error", error: error.message });

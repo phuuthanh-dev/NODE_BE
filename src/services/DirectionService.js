@@ -19,7 +19,6 @@ const createDirections = async (title, content, destiny) => {
         return { errCode: 1, message: "Server error" };
     }
 }
-
 const getDirectionBydestiny = async (destiny) => {
     try {
         const directions = await Direction.find({ destiny });
