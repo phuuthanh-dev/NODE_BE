@@ -4,5 +4,8 @@
     },
     "cSpell.words": [
         "finishdate"
-    ]
+    ],
+    "continue.enableContinueForTeams": true,
+    "continue.enableDebugLogs": true,
+    "continue.enableQuickActions": true
 }

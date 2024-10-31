@@ -2,7 +2,7 @@ const moment = require("moment");
 const lunar = require('lunar-calendar');
 
 const convertToLunar = (birth) => {
-    const gregorianDate = moment(birth, "DD/MM/YYYY");
+    const gregorianDate = moment(birth, "YYYY-MM-DD");
     const day = gregorianDate.date();
     const month = gregorianDate.month() + 1;
     const year = gregorianDate.year();
@@ -12,7 +12,6 @@ const convertToLunar = (birth) => {
         day: lunarDate.lunarDay,
         month: lunarDate.lunarMonth,
         year: lunarDate.lunarYear,
-        birthDay: lunarDate,
         isLeapMonth: lunarDate.isLeap !== undefined ? lunarDate.isLeap : false
     };
 };
@@ -33,8 +32,7 @@ const calculateDirectionDestiny = async (birth, gender) => {
     } else {
         throw new Error("Invalid gender specified.");
     }
-
-    return destiny;
+    return { destiny, lunarDate: formattedLunarDate };
 }
 
 const maleDestiny = [
