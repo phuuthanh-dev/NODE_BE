@@ -2,7 +2,7 @@ const PondFuture = require("../models/PondFeature")
 
 const createPondFeature = async (targetType, value, zoldiacId) => {
     try {
-        const newPondFuature = new PondFuture({ targetType, value, zodiac_element: zoldiacId });
+        const newPondFuature = new PondFuture({ targetType, value, zodiac_element: zoldiacId, status: "Active" });
         await newPondFuature.save();
         return { errCode: 0, message: "Success" };
     } catch (error) {
@@ -13,7 +13,7 @@ const createPondFeature = async (targetType, value, zoldiacId) => {
 
 const getAllPondFeatures = async () => {
     try {
-        const pondFeatures = await PondFuture.find();
+        const pondFeatures = await PondFuture.find().populate("zodiac_element");
         return { errCode: 0, message: "Success", pondFeatures };
     } catch (error) {
         console.error("Error in createPondFeature:", error);
