@@ -1,3 +1,4 @@
+const { create } = require("../models/KoiFishBreed");
 var userService = require("../services/userService");
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
@@ -191,6 +192,27 @@ const calculateZodiac = async (req, res) => {
   }
 }
 
+const createConsultation = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { timeBooked, description } = req.body;
+
+    if (!timeBooked || !description) {
+      return res.status(400).json({
+        errCode: 1,
+        message: 'Invalid input parameters'
+      });
+    }
+
+    const result = await userService.createConsultation(userId, timeBooked, description);
+
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error('Error in createConsultation controller:', error);
+    return res.status(500).json({ errCode: 1, message: 'Server error', error: error.message });
+  }
+}
+
 
 module.exports = {
   handleLogin: handleLogin,
@@ -199,5 +221,6 @@ module.exports = {
   getProfile: getProfile,
   updateProfile: updateProfile,
   deleteAccount: deleteAccount,
-  calculateZodiac: calculateZodiac
+  calculateZodiac: calculateZodiac,
+  createConsultation,
 };

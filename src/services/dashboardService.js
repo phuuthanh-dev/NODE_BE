@@ -1,6 +1,7 @@
 const KoiFishBreed = require("../models/KoiFishBreed");
 const User = require("../models/User");
 const Advertisement = require("../models/Advertisement");
+const Consultation = require("../models/Consultation");
 const getRevenew = async () => {
     try {
         const users = await User.countDocuments();
@@ -85,8 +86,33 @@ const getBarChartData = async () => {
 
 const getNearlyConsultation = async () => {
     try {
-        let advertisements = await Advertisement.find({}).sort({ createdAt: -1 }).limit(5);
-        return { errCode: 0, message: "Success", advertisements };
+        const recentConsultationsFind = await Consultation.find()
+            .sort({ createdAt: -1 })
+            .limit(3)
+            .populate({
+                path: 'user',
+                select: 'name',
+                populate: {
+                    path: 'zodiac_element',
+                    select: 'name'
+                }
+            })
+            .populate({
+                path: 'koiFishBreed', 
+                select: 'name'
+            });
+
+        // Transform the data to match your desired format
+        const recentConsultations = recentConsultationsFind.map(consultation => ({
+            id: consultation._id,
+            userName: consultation.user.name,
+            element: consultation.user.zodiac_element.name,
+            koiType: consultation.koiFishBreed.name,
+            status: consultation.status,
+            createdAt: consultation.createdAt
+        }));
+
+        return { errCode: 0, message: "Success", recentConsultations };
     } catch (error) {
         console.error("Error in getNearlyConsultation:", error);
         return { errCode: 1, message: "Server error" };
