@@ -1,6 +1,7 @@
 const Advertisement = require('../models/Advertisement');
 const KoiFishBreed = require('../models/KoiFishBreed');
 const ZodiacElement = require('../models/Zodiac');
+const PondFeature = require('../models/PondFeature');
 const AdvertisementFengShuiTarget = require('../models/AdvertisementFengShuiTarget ');
 const { model } = require('mongoose');
 
@@ -31,11 +32,11 @@ const handleGetAdvertisementById = (id) => {
                     model: ["KoiFishBreed", "ZodiacElement", "PondFeature"]
                 }
             });
-            
+
             if (!advertisement) {
                 resolve({ errCode: 1, message: "Cannot get advertisement" });
             }
-            
+
             resolve(advertisement);
         } catch (error) {
             console.error("Error in handleGetAdvertisementById:", error);
@@ -86,7 +87,10 @@ const handleCreateAdvertisement = (title, content, image, tags, user) => {
                                 advertisement.tags.push(advertisementFengShuiTarget._id);
                             }
                         } else if (tag === "Tính Năng Hồ") {
-                            const pondFeature = await PondFuture.findOne({ name: childTag });
+                            const [targetType, value] = childTag.split(":");
+                            const pondFeature = await PondFeature.findOne({ targetType: targetType, value: value });
+
+                            console.log(pondFeature);
                             if (pondFeature) {
                                 const advertisementFengShuiTarget = new AdvertisementFengShuiTarget({
                                     attribute_id: pondFeature._id,
