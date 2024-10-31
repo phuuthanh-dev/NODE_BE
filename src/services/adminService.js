@@ -7,7 +7,7 @@ const { calculateZodiac } = require("../helpers/calculateZodiac");
 let handleGetAllUser = () => {
     return new Promise(async (resolve, reject) => {
         try {
-            let users = await User.find({});
+            let users = await User.find({}).populate("zodiac_element");
 
             if (!users) {
                 resolve({ errCode: 1, message: "Cannot get user" });
