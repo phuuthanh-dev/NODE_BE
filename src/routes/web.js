@@ -5,7 +5,7 @@ const userRoutes = require('./userRoutes');
 const serviceRoutes = require('./serviceRoutes');
 const koiFishBreedRoutes = require('./koiFishBreedRoutes');
 const zodiacRoutes = require('./zodiacRoutes');
-const pondFeatureRouter = require('./pondFeatureRoutes')
+const pondFeatureRoutes = require('./pondFeatureRoutes')
 const destinyRouter = require("./destinyRoutes")
 const directionRouter = require("./directionRoutes")
 const advertisementRouter = require('./advertisementRoutes');
@@ -13,14 +13,14 @@ const balanceRoutes = require('./balanceRoutes');
 const paymentRoutes = require('./paymentRoutes');
 const transactionRoutes = require('./transactionRoutes');
 const fengShuiRouter = require('./fengShuiRoutes');
-
+const dashboardRouter = require('./dashboardRoutes');
 let initWebRoutes = (app) => {
   app.use("/api/v1", authRoutes);
   app.use("/api/v1", userRoutes);
   app.use("/api/v1", serviceRoutes);
   app.use("/api/v1", koiFishBreedRoutes);
   app.use("/api/v1", zodiacRoutes);
-  app.use("/api/v1", pondFeatureRouter)
+  app.use("/api/v1", pondFeatureRoutes)
   app.use("/api/v1", destinyRouter)
   app.use("/api/v1", directionRouter)
   app.use("/api/v1", advertisementRouter);
@@ -28,6 +28,8 @@ let initWebRoutes = (app) => {
   app.use("/api/v1", paymentRoutes);
   app.use("/api/v1", transactionRoutes);
   app.use("/api/v1", fengShuiRouter);
+  app.use("/api/v1", dashboardRouter);
+
 };
 
 module.exports = initWebRoutes;

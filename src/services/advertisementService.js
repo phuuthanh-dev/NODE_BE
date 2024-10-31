@@ -59,7 +59,7 @@ const handleCreateAdvertisement = (title, content, image, tags, user) => {
                 status: false,
                 user_id: user.id
             });
-            console.log(tags);
+
             for (const tagGroup of tags) {
                 const tag = tagGroup.tag;
                 if (predefinedTags.includes(tag)) {
@@ -89,7 +89,6 @@ const handleCreateAdvertisement = (title, content, image, tags, user) => {
                             const [targetType, value] = childTag.split(":");
                             const pondFeature = await PondFeature.findOne({ targetType: targetType, value: value });
 
-                            console.log(pondFeature);
                             if (pondFeature) {
                                 const advertisementFengShuiTarget = new AdvertisementFengShuiTarget({
                                     attribute_id: pondFeature._id,
