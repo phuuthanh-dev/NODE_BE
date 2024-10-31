@@ -24,6 +24,8 @@ const handleLogin = async (req, res) => {
       process.env.ACCESS_TOKEN_SECRET
     );
 
+    userData.user.accessToken = accessToken;
+
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
       path: "/",
@@ -34,8 +36,7 @@ const handleLogin = async (req, res) => {
     return res.status(200).json({
       errCode: userData.errCode,
       message: userData.errMessage,
-      user: userData.user,
-      accessToken,
+      user: userData.user
     });
   } catch (error) {
     console.error("Error in handleLogin:", error);
@@ -189,6 +190,7 @@ const calculateZodiac = async (req, res) => {
     return res.status(500).json({ errCode: 1, message: 'Server error', error: error.message });
   }
 }
+
 
 module.exports = {
   handleLogin: handleLogin,
