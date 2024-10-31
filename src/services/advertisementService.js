@@ -2,7 +2,6 @@ const Advertisement = require('../models/Advertisement');
 const KoiFishBreed = require('../models/KoiFishBreed');
 const ZodiacElement = require('../models/Zodiac');
 const AdvertisementFengShuiTarget = require('../models/AdvertisementFengShuiTarget ');
-const { model } = require('mongoose');
 
 const handleGetAllAdvertisement = () => {
     return new Promise(async (resolve, reject) => {
