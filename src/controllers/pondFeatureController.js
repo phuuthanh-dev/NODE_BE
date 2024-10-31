@@ -64,9 +64,10 @@ const getPondFeature = async (req, res) => {
 const changeStatusPondFeature = async (req, res) => {
     try {
         let { id } = req.params;
-        let data = await pondFuture.changeStatus(id);
+        let data = await pondFeature.changeStatus(id);
         return res.status(200).json(data);
-    } catch {
+    } catch(error) {
+        console.error("Error in changeStatusPondFeature:", error);
         return res.status(500).json(error);
     }
 }
