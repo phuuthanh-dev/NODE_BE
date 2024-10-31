@@ -111,8 +111,31 @@ const handleCreateAdvertisement = (title, content, image, tags, user) => {
     });
 }
 
+const handleUpdateAdvertisement = (id, title, content, image) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const advertisement = await Advertisement.findById(id);
+
+            if (!advertisement) {
+                resolve({ errCode: 1, message: "Cannot find advertisement" });
+            }
+
+            advertisement.title = title;
+            advertisement.content = content;
+            advertisement.image = image;
+            
+            await advertisement.save();
+            resolve(advertisement);
+        } catch (error) {
+            console.error("Error in handleUpdateAdvertisement:", error);
+            resolve({ errCode: 1, message: "Server error", error: error.message });
+        }
+    });
+}
+
 module.exports = {
     handleGetAllAdvertisement,
     handleGetAdvertisementById,
-    handleCreateAdvertisement
+    handleCreateAdvertisement,
+    handleUpdateAdvertisement
 }
