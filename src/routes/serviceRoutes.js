@@ -5,7 +5,7 @@ let router = express.Router();
 
 router.get("/services", adminController.getAllServices);
 router.get("/service/:id", adminController.getServiceById);
-router.post("/services", adminController.createService);
+router.post("/service", adminController.createService);
 router.patch("/service/:id", adminController.updateService);
 router.delete("/service/:id", adminController.deleteService);
 

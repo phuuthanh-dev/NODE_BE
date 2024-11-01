@@ -42,7 +42,7 @@ const handleGetUserById = (id) => {
     });
 };
 
-const handleUserUpdate = (id, email, password, gender, name, birth) => {
+const handleUserUpdate = (id, email, password, gender, name, birth, status) => {
     return new Promise(async (resolve, reject) => {
         try {
             const myZodiac = await calculateZodiac(birth);
@@ -52,8 +52,12 @@ const handleUserUpdate = (id, email, password, gender, name, birth) => {
                 resolve({ errCode: 2, message: "Zodiac not found" });
                 return;
             }
-
-            await User.updateOne({ _id: id }, { email, password, gender, name, birth, zodiac_element: zodiacElement._id });
+            if (status) {
+                status = "Active"
+            } else {
+                status = "Inactive";
+            }
+            await User.updateOne({ _id: id }, { email, password, gender, name, birth, status, zodiac_element: zodiacElement._id });
             resolve({ errCode: 0, message: "Update user success" });
         } catch (error) {
             console.error("Error in handleUserRegister:", error);

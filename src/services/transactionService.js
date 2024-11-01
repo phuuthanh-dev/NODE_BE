@@ -30,15 +30,21 @@ const processDepositTransaction = async (transaction) => {
 };
 
 const getMyTransaction = async (userID) => {
-    return await Transaction.find({ user_id: userID });
+    const transactions = await Transaction.find({ user_id: userID });
+    if (!transactions) return { errCode: 1, message: 'Success', transactions: [] };
+    return { errCode: 0, message: 'Success', transactions };
 }
 
 const getTransactionByCode = async (code) => {
-    return await Transaction.findOne({ code });
+    const transaction = await Transaction.findOne({ code });
+    if (!transaction) return { errCode: 1, message: 'Transaction not found' };
+    return { errCode: 0, message: 'Success', transaction };
 }
 
 const getAllTransactions = async () => {
-    return await Transaction.find();
+    const transactions = await Transaction.find();
+    if (!transactions) return { errCode: 1, message: 'Success', transactions: [] };
+    return { errCode: 0, message: 'Success', transactions };
 }
 
 module.exports = {

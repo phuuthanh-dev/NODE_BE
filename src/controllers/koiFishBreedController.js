@@ -43,8 +43,10 @@ const getKoiFishByZodiac = async (req, res) => {
 const updateKoiFishBreed = async (req, res) => {
     try {
         let { id } = req.params;
-        let { name, description, imageUrl, zodiacElementId } = req.body;
-        let data = await koiFishBreedService.updateKoiFishBreed(id, name, description, imageUrl, zodiacElementId);
+        let { name, description, image_url, zodiac_element } = req.body;
+
+  
+        let data = await koiFishBreedService.updateKoiFishBreed(id, name, description, image_url, zodiac_element);
         return res.status(200).json(data);
     } catch (error) {
         return res.status(500).json(error);

@@ -5,7 +5,9 @@ require("dotenv").config();
 const moment = require("moment");
 const { calculateZodiac } = require("../helpers/calculateZodiac");
 const Consultation = require("../models/Consultation");
-
+const UserPackage = require("../models/UserPackage");
+const AdPackage = require("../models/AdPackage");
+const Transaction = require('../models/transaction');
 
 const handleUserLogin = async (email, password) => {
     try {
@@ -129,11 +131,96 @@ const createConsultation = async (userId, timeBooked, description) => {
     }
 }
 
+const buyPackage = async (req) => {
+    try {
+        console.log(req.body);
+        const { packageId, userId } = req.body;
+        const user = await User.findById(userId);
+        if (!user) {
+            return { errCode: 1, message: "User not found" };
+        }
+
+        const adPackage = await AdPackage.findById(packageId);
+        if (!adPackage) {
+            return { errCode: 2, message: "Package not found" };
+        }
+
+        if (user.balance < adPackage.price) {
+            return { errCode: 3, message: "Insufficient balance" };
+        }
+
+        const activePackage = await UserPackage.findOne({ user_id: userId });
+        const startDay = new Date();
+        const endDay = moment(startDay).add(adPackage.duration, 'days').toDate();
+
+        let userPackage;
+        if (activePackage) {
+            const newExpireDate = new Date(Math.max(endDay, activePackage.expireDate));
+            userPackage = await UserPackage.findByIdAndUpdate(
+                activePackage._id, {
+                expireDate: newExpireDate,
+                tokenPoint: activePackage.tokenPoint + adPackage.usesPerDur
+            }, { new: true }
+            );
+        } else {
+            userPackage = new UserPackage({
+                user_id: userId,
+                expireDate: endDay,
+                tokenPoint: adPackage.usesPerDur
+            });
+            await userPackage.save();
+        }
+
+        user.balance -= adPackage.price;
+        await user.save();
+
+        const transactionCode = `PA${Date.now()}`;
+
+        const transaction = new Transaction({
+            user_id: userId,
+            type: "Buy package money",
+            code: transactionCode,
+            amount: adPackage.price,
+            content: `Buy package ${adPackage.name}`,
+            status: "Success",
+            paymentMethod: "Balance"
+        });
+        await transaction.save();
+
+        console.log(userPackage);
+
+        return { errCode: 0, message: "Success" };
+    } catch (error) {
+        console.error("Error in buyPackage:", error);
+        return { errCode: 1, message: "Server error" };
+    }
+};
+
+const minusBalance = async (id, amount) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const user = await User.findById(id);
+            let totalBalance = user.balance;
+            if (totalBalance < amount) {
+                resolve({ errCode: 1, message: "Insufficient balance" });
+            } else {
+                user.balance = user.balance - amount;
+                await user.save();
+            }
+            resolve({ errCode: 0, message: "Success" })
+        } catch (error) {
+            console.error("Error in minusBalance:", error);
+            return { errCode: 1, message: "Server error" };
+        }
+    })
+}
 
 module.exports = {
-    handleUserLogin: handleUserLogin,
-    checkUserCredential: checkUserCredential,
-    handleUserRegister: handleUserRegister,
+    handleUserLogin,
+    checkUserCredential,
+    handleUserRegister,
     getMyZodiac: getMyZodiac,
     createConsultation,
+    buyPackage,
+    minusBalance
 };

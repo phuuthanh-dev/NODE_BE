@@ -33,13 +33,13 @@ const createAdvertisement = async (req, res) => {
         const { title, content, image, tags } = req.body;
         const user = req.user;
 
-        const advertisement = await advertisementSerive.handleCreateAdvertisement(title, content, image, tags,user);
+        const advertisement = await advertisementSerive.handleCreateAdvertisement(title, content, image, tags, user);
         if (!advertisement) {
             return res.status(400).json({ errCode: 1, message: "Cannot create advertisement" });
         }
         return res.status(200).json({ errCode: 0, message: "Create advertisement success" });
     } catch (error) {
-        console.error("Error in handleCreateAdvertisement:", error);
+        console.error("Error in createAdvertisement:", error);
         return res.status(500).json({ errCode: 1, message: "Server error", error: error.message });
     }
 }
@@ -61,9 +61,39 @@ const updateAdvertisement = async (req, res) => {
     }
 }
 
+const getMyAdvertisement = async (req, res) => {
+    try {
+        const user = req.user;
+        const advertisements = await advertisementSerive.handleGetMyAdvertisement(user);
+        if (!advertisements) {
+            return res.status(400).json({ errCode: 1, message: "Cannot get advertisement" });
+        }
+        return res.status(200).json({ errCode: 0, message: "Get advertisement success", advertisements: advertisements });
+    } catch (error) {
+        console.error("Error in handleGetMyAdvertisement:", error);
+        return res.status(500).json({ errCode: 1, message: "Server error", error: error.message });
+    }
+}
+
+const createAdvertisementByUser = async (req, res) => {
+    try {
+        const { title, content, image, tags } = req.body;
+        const user = req.user;
+        const advertisement = await advertisementSerive.handleCreateAdvertisementByUser(title, content, image, tags, user);
+        if (advertisement.message) {
+            return res.status(200).json({ errCode: 1, message: advertisement.message });
+        }
+        return res.status(200).json({ errCode: 0, message: "Create advertisement success" });
+    } catch (error) {
+        console.error("Error in createAdvertisementByUser:", error);
+        return res.status(500).json({ errCode: 1, message: "Server error", error: error.message });
+    }
+}
 module.exports = {
     getAllAdvertisement,
     getAdvertisementById,
     createAdvertisement,
-    updateAdvertisement
+    updateAdvertisement,
+    getMyAdvertisement,
+    createAdvertisementByUser,
 }

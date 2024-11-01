@@ -51,9 +51,21 @@ const addPropertyToConsultation = async (req, res) => {
     }
 }
 
+const getConsultationsByUserId = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await consultationServive.getConsultationsByUserId(id);
+        return res.json(result);
+
+    } catch (error) {
+        console.error("Error in getConsultationsByUserIdController:", error);
+        return res.json({ errCode: 1, message: "Server error" });
+    }
+}
 module.exports = {
     getAllConsultations,
     getConsultationById,
     addPropertyToConsultation,
-    changeConsultationStatus
+    changeConsultationStatus,
+    getConsultationsByUserId
 }

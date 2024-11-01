@@ -11,5 +11,6 @@ router.post("/users", adminController.createUser);
 router.patch("/user/:id", adminController.updateUser);
 router.patch("/user/:id/status", adminController.changeUserStatus);
 router.post("/consultation",verifyToken, userController.createConsultation);
-
+router.post("/purchase", userController.buyPackage);
+router.post("/minus_balance", verifyToken, userController.minusBalance);
 module.exports = router;

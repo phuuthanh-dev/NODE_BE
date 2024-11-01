@@ -20,7 +20,7 @@ const consultationSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['Chưa nhận','Đã nhận','Từ chối','Đang tư vấn', 'Hoàn thành'],
+        enum: ['Chưa nhận','Đã nhận','Từ chối','Đang tư vấn', 'Hoàn thành', 'Hủy'],
         default: 'Chưa nhận'
     },
     timeBooked: {

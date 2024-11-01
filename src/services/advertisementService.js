@@ -3,6 +3,7 @@ const KoiFishBreed = require('../models/KoiFishBreed');
 const ZodiacElement = require('../models/Zodiac');
 const PondFeature = require('../models/PondFeature');
 const AdvertisementFengShuiTarget = require('../models/AdvertisementFengShuiTarget ');
+const UserPackage = require('../models/UserPackage');
 
 const handleGetAllAdvertisement = () => {
     return new Promise(async (resolve, reject) => {
@@ -30,7 +31,7 @@ const handleGetAdvertisementById = (id) => {
                     path: "attribute_id",
                     model: ["KoiFishBreed", "ZodiacElement", "PondFeature"]
                 }
-            });
+            }).populate("user_id");
 
             if (!advertisement) {
                 resolve({ errCode: 1, message: "Cannot get advertisement" });
@@ -52,6 +53,9 @@ const handleCreateAdvertisement = (title, content, image, tags, user) => {
                 "Tính Năng Hồ",
                 "Yếu Tố Cung Hoàng Đạo",
             ];
+
+            console.log(title, content, image, tags, user);
+
             const advertisement = new Advertisement({
                 title: title,
                 content: content,
@@ -123,7 +127,7 @@ const handleUpdateAdvertisement = (id, title, content, image) => {
             advertisement.title = title;
             advertisement.content = content;
             advertisement.image = image;
-            
+
             await advertisement.save();
             resolve(advertisement);
         } catch (error) {
@@ -133,9 +137,116 @@ const handleUpdateAdvertisement = (id, title, content, image) => {
     });
 }
 
+const handleGetMyAdvertisement = (user) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const advertisements = await Advertisement.find({ user_id: user.id });
+
+            if (!advertisements) {
+                resolve({ errCode: 1, message: "Cannot get advertisement" });
+            }
+
+            resolve(advertisements);
+        } catch (error) {
+            console.error("Error in handleGetMyAdvertisement:", error);
+            resolve({ errCode: 1, message: "Server error", error: error.message });
+        }
+    });
+}
+
+
+const handleCreateAdvertisementByUser = (title, content, image, tags, user) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+
+            const premiumUserPackages = await UserPackage.findOne({ user_id: user.id });
+            if (!premiumUserPackages) {
+                return resolve({ errCode: 1, message: "User package not found" });
+            }
+            console.log("premiumUserPackages:", premiumUserPackages);
+
+            let totalPoint = premiumUserPackages.tokenPoint;
+
+            console.log("totalPoint:", totalPoint);
+
+            if (totalPoint >= 5) {
+                totalPoint -= 5;
+                premiumUserPackages.tokenPoint = totalPoint;
+                await premiumUserPackages.save();
+
+                const predefinedTags = [
+                    "Giống Cá Koi",
+                    "Tính Năng Hồ",
+                    "Yếu Tố Cung Hoàng Đạo",
+                ];
+                const advertisement = new Advertisement({
+                    title: title,
+                    content: content,
+                    image: image,
+                    status: false,
+                    user_id: user.id
+                });
+
+                for (const tagGroup of tags) {
+                    const tag = tagGroup.tag;
+                    if (predefinedTags.includes(tag)) {
+                        const childTags = tagGroup.childTags;
+                        for (const childTag of childTags) {
+                            if (tag === "Giống Cá Koi") {
+                                const koiFishBreed = await KoiFishBreed.findOne({ name: childTag });
+                                if (koiFishBreed) {
+                                    const advertisementFengShuiTarget = new AdvertisementFengShuiTarget({
+                                        attribute_id: koiFishBreed._id,
+                                        TargetType: "KoiFishBreeds"
+                                    });
+                                    await advertisementFengShuiTarget.save();
+                                    advertisement.tags.push(advertisementFengShuiTarget._id);
+                                }
+                            } else if (tag === "Yếu Tố Cung Hoàng Đạo") {
+                                const zodiacElement = await ZodiacElement.findOne({ name: childTag });
+                                if (zodiacElement) {
+                                    const advertisementFengShuiTarget = new AdvertisementFengShuiTarget({
+                                        attribute_id: zodiacElement._id,
+                                        TargetType: "ZodiacElements"
+                                    });
+                                    await advertisementFengShuiTarget.save();
+                                    advertisement.tags.push(advertisementFengShuiTarget._id);
+                                }
+                            } else if (tag === "Tính Năng Hồ") {
+                                const [targetType, value] = childTag.split(":");
+                                const pondFeature = await PondFeature.findOne({ targetType: targetType, value: value });
+
+                                if (pondFeature) {
+                                    const advertisementFengShuiTarget = new AdvertisementFengShuiTarget({
+                                        attribute_id: pondFeature._id,
+                                        TargetType: "PondFeatures"
+                                    });
+                                    await advertisementFengShuiTarget.save();
+                                    advertisement.tags.push(advertisementFengShuiTarget._id);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                await advertisement.save();
+
+                resolve(premiumUserPackages);
+            } else {
+                resolve({ errCode: 2, message: "You do not have enough points to create a blog" });
+            }
+        } catch (error) {
+            console.error("Error in handleCreateAdvertisement:", error);
+            resolve({ errCode: 1, message: "Server error", error: error.message });
+        }
+    });
+}
+
 module.exports = {
     handleGetAllAdvertisement,
     handleGetAdvertisementById,
     handleCreateAdvertisement,
-    handleUpdateAdvertisement
+    handleUpdateAdvertisement,
+    handleGetMyAdvertisement,
+    handleCreateAdvertisementByUser
 }

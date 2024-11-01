@@ -7,6 +7,7 @@ router.get("/revenew", dashboardController.getRevenew);
 router.get("/piechart", dashboardController.getPieChartData);
 router.get("/barchart", dashboardController.getBarChartData);
 router.get("/nearlyConsultation", dashboardController.getNearlyConsultation);
+router.get("/premiumUsers", dashboardController.getPremiumUser);
 
 
 module.exports = router;

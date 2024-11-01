@@ -19,7 +19,7 @@ const transactionSchema = new Schema(
         },
         type: {
             type: String,
-            enum: ['Withdraw money', 'Deposit money'],
+            enum: ['Withdraw money', 'Deposit money', 'Buy package money'],
             required: true,
         },
         paymentMethod: {
@@ -36,7 +36,7 @@ const transactionSchema = new Schema(
         },
         status: {
             type: String,
-            enum: ['Pending', 'Success', 'Failed'],
+            enum: ['Pending', 'Success', 'Failed', 'package-money'],
             default: 'Pending',
             required: true,
         },

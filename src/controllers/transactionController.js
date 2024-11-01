@@ -9,11 +9,28 @@ const getMyTransaction = async (req, res) => {
 }
 
 const getTransactionByCode = async (req, res) => {
-    return res.json(await transactionService.getTransactionByCode(req.params.code));
+    try {
+        const code = req.params.code;
+      const transaction=  await transactionService.getTransactionByCode(code)
+        if(!transaction){
+            return res.status(404).json({message: "Transaction not found"})
+        }
+        return res.status(200).json(transaction)
+    } catch (error) {
+        console.log("Error at getTransactionByCode", error)
+        return res.status(500).json({ message: error.message });       
+    }
 }
 
 const getAllTransactions = async (req, res) => {
-    return res.json(await transactionService.getAllTransactions());
+    try {
+        const transactions = await transactionService.getAllTransactions();
+        return res.status(200).json(transactions)
+    } catch (error) {
+        console.log("Error at getAllTransactions", error)
+        return res.status(500).json({ message: error.message });
+        
+    }
 }
 
 module.exports = {

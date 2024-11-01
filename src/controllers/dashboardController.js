@@ -35,9 +35,19 @@ const getNearlyConsultation = async (req, res) => {
         return res.status(500).json(error);
     }
 }
+
+const getPremiumUser = async (req, res) => {
+    try {
+        let data = await dashboardService.getPremiumUser();
+        return res.status(200).json(data);
+    } catch (error) {
+        return res.status(500).json(error);
+    }
+}
 module.exports = {
     getRevenew,
     getPieChartData,
     getBarChartData,
-    getNearlyConsultation
+    getNearlyConsultation,
+    getPremiumUser
 }

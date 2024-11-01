@@ -41,9 +41,9 @@ const getKoiFishById = async (id) => {
     }
 }
 
-const updateKoiFishBreed = async (id, name, description, imageUrl, zodiacElementId) => {
+const updateKoiFishBreed = async (id, name, description, image_url, zodiac_element) => {
     try {
-        await KoiFishBreed.findByIdAndUpdate(id, { name, description, image_url: imageUrl, zodiac_element: zodiacElementId });
+        await KoiFishBreed.findByIdAndUpdate(id, { name, description, image_url, zodiac_element });
         return { errCode: 0, message: "Success" };
     }
     catch (error) {
